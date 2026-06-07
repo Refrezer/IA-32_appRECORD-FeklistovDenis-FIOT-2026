@@ -104,7 +104,7 @@ code {
   border-radius: 18px;
   overflow: hidden;
 
-  border: 1px solid var(--border);
+  border: 1px solid var(--paper-border);
   background: rgba(255, 255, 255, 0.06);
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
 
@@ -210,7 +210,7 @@ code {
 }
 
 .toc-item:hover {
-  border-color: var(--border);
+  border-color: var(--paper-border);
   color: var(--text);
 }
 
@@ -327,7 +327,7 @@ code {
   margin: 14px 0;
   padding: 0;
   border-radius: 14px;
-  border: 1px solid var(--border);
+  border: 1px solid var(--paper-border);
   background: rgba(255, 255, 255, 0.04);
 }
 
@@ -342,46 +342,48 @@ code {
   min-height: 56px;
   display: block;
   border-radius: 14px;
-  border: 1px solid var(--border);
+  border: 1px solid var(--paper-border);
   background: rgba(255, 255, 255, 0.04);
 }
 
+/* ========================================= */
+/* ВИПРАВЛЕНІ СТИЛІ ДЛЯ ТАБЛИЦЬ (БЕЗ NOWRAP) */
+/* ========================================= */
 .md table {
   width: 100%;
+  table-layout: auto; /* Дозволяє браузеру адекватно ділити ширину */
   border-collapse: collapse;
   margin: 14px 0;
-  display: block;
+  display: table; /* Замінено display: block, щоб таблиця працювала як таблиця */
+  font-size: 14px;
+}
+
+/* Обгортка для горизонтального скролу на малих екранах */
+.table-wrapper {
   overflow-x: auto;
+  width: 100%;
+  margin: 14px 0;
 }
 
 .md th,
 .md td {
   border: 1px solid var(--paper-border);
-  padding: 10px 12px;
+  padding: 12px 14px;
   text-align: left;
   vertical-align: top;
+  word-break: break-word; /* Дозволяє довгим словам переноситися */
+  white-space: normal; /* ЯВНО ЗАБОРОНЯЄМО НЕДОЛУГИЙ NOWRAP */
 }
 
 .md thead th {
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(255, 255, 255, 0.05);
+  font-weight: 600;
 }
 
 .md tbody tr:nth-child(even) {
   background: rgba(255, 255, 255, 0.02);
 }
-
-.md th:first-child,
-.md td:first-child {
-  white-space: nowrap;
-}
-
-.md table {
-  font-size: 14px;
-}
-
-.md th {
-  font-weight: 600;
-}
+/* ========================================= */
 
 .footer {
   padding: 14px 0 26px;
@@ -429,36 +431,4 @@ code {
     top: 0;
     max-height: none;
   }
-  /* Виправлення для розірваних таблиць */
-.md table {
-  width: 100%;
-  border-collapse: collapse;
-  margin: 14px 0;
-  display: block;
-  overflow-x: auto;
-}
-
-.md th,
-.md td {
-  border: 1px solid var(--paper-border, #555);
-  padding: 10px 12px;
-  text-align: left;
-  vertical-align: top;
-  min-width: 250px; /* Саме цей рядок рятує від злипання літер */
-  word-wrap: break-word;
-}
-
-.md thead th {
-  background: rgba(255, 255, 255, 0.05);
-  font-weight: 600;
-}
-
-.md tbody tr:nth-child(even) {
-  background: rgba(255, 255, 255, 0.02);
-}
-
-.md th:first-child,
-.md td:first-child {
-  white-space: normal !important; /* Прибираємо налаштування, яке ламало таблицю */
-}
 }

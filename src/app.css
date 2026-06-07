@@ -429,4 +429,36 @@ code {
     top: 0;
     max-height: none;
   }
+  /* Виправлення для розірваних таблиць */
+.md table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 14px 0;
+  display: block;
+  overflow-x: auto;
+}
+
+.md th,
+.md td {
+  border: 1px solid var(--paper-border, #555);
+  padding: 10px 12px;
+  text-align: left;
+  vertical-align: top;
+  min-width: 250px; /* Саме цей рядок рятує від злипання літер */
+  word-wrap: break-word;
+}
+
+.md thead th {
+  background: rgba(255, 255, 255, 0.05);
+  font-weight: 600;
+}
+
+.md tbody tr:nth-child(even) {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.md th:first-child,
+.md td:first-child {
+  white-space: normal !important; /* Прибираємо налаштування, яке ламало таблицю */
+}
 }

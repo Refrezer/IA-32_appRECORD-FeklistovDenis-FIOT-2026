@@ -49,12 +49,12 @@
 **Use-case діаграма:**
 Актор "Адміністратор" взаємодіє з системою через прецеденти: "Авторизація", "Перегляд статистики", "Керування даними (CRUD)".
 
-![Use case діаграма](../../assets/labs/lab-1/usecase.png)
+![Use case діаграма](../assets/labs/lab-1/usecase.png)
 
 **ER-діаграма:**
 Система містить сутність `Student` з атрибутами: `id` (PK), `name`, `group`.
 
-![ER діаграма](../../assets/labs/lab-1/er-diagram.png)
+![ER діаграма](../assets/labs/lab-1/er-diagram.png)
 
 ---
 

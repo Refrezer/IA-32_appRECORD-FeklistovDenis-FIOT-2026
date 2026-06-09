@@ -24,6 +24,8 @@
     "vite": "^6.0.0"
   },
   "dependencies": {
-    "gray-matter": "^4.0.3"
+    "gray-matter": "^4.0.3",
+    "mysql2": "^3.22.5",
+    "sequelize": "^6.37.8"
   }
 }

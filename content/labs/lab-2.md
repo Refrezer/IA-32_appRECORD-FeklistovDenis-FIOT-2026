@@ -26,7 +26,9 @@
 <br>
 
 <div align="center">
+
 Київ – 2026
+
 </div>
 
 ---
@@ -67,29 +69,26 @@ lab2-rest-api/
 │   ├── User.js         # Модель користувача (Users)
 │   └── Post.js         # Модель публікації (Posts)
 │
-├── database.sqlite     # Локальний файл реляційної бази даних (генерується автоматично)
-├── server.js           # Головний файл сервера, маршрути REST API, синхронізація БД
-├── package.json        # Залежності проєкту (express, sequelize, sqlite3)
+├── database.sqlite     # Локальний файл реляційної бази даних
+├── server.js           # Головний файл сервера, маршрути REST API
+├── package.json        # Залежності проєкту
 └── node_modules/
-
 ```
 
 ### 2.2 Налаштування підключення до бази даних
 
-Для реалізації з'єднання з базою даних створено модуль `config/database.js`. В якості діалекту вказано `sqlite`, а шлях до сховища налаштовано в корінь проєкту:
+Для реалізації з'єднання з базою даних створено модуль `config/database.js`. В якості діалекту вказано `sqlite`:
 
 ```javascript
 const { Sequelize } = require('sequelize');
 
-// Ініціалізація інстансу Sequelize для роботи з SQLite сховищем
 const sequelize = new Sequelize({
   dialect: 'sqlite',
   storage: './database.sqlite',
-  logging: false // Вимкнення надлишкового спаму SQL-логів у терміналі
+  logging: false 
 });
 
 module.exports = sequelize;
-
 ```
 
 ### 2.3 Опис моделей даних та встановлення зв'язків
@@ -115,7 +114,6 @@ const User = sequelize.define('User', {
 });
 
 module.exports = User;
-
 ```
 
 **Модель Post (`models/Post.js`):**
@@ -136,14 +134,13 @@ const Post = sequelize.define('Post', {
 });
 
 module.exports = Post;
-
 ```
 
 ### 2.4 Реалізація One-to-Many зв'язку та REST API маршрутів
 
-У головному файлі застосунку `server.js` було задекларовано відношення **Один-до-багатьох (One-to-Many)**: один користувач може володіти багатьма публікаціями, а кожна публікація посилається на конкретного автора через автоматично згенерований зовнішній ключ `userId`.
+У головному файлі застосунку `server.js` було задекларовано відношення **Один-до-багатьох (One-to-Many)**. 
 
-Також реалізовано маршрути для виконання операцій додавання, читання, оновлення та видалення записів (CRUD) із застосуванням методів Sequelize (`findAll`, `create`, `update`, `destroy`).
+Також реалізовано маршрути для виконання операцій додавання, читання, оновлення та видалення записів (CRUD) із застосуванням методів Sequelize.
 
 **Фрагмент коду `server.js`:**
 
@@ -160,7 +157,7 @@ app.use(express.json());
 User.hasMany(Post, { foreignKey: 'userId', onDelete: 'CASCADE' });
 Post.belongsTo(User, { foreignKey: 'userId' });
 
-// GET /users - Отримання користувачів разом із їхніми постами (SQL LEFT OUTER JOIN)
+// GET /users - Отримання користувачів разом із їхніми постами
 app.get('/users', async (req, res) => {
     try {
         const users = await User.findAll({ include: Post });
@@ -170,7 +167,7 @@ app.get('/users', async (req, res) => {
     }
 });
 
-// POST /users - Створення нового користувача (INSERT INTO)
+// POST /users - Створення нового користувача
 app.post('/users', async (req, res) => {
     try {
         const { name, email } = req.body;
@@ -196,47 +193,13 @@ app.post('/posts', async (req, res) => {
     }
 });
 
-// PUT /posts/:id - Редагування існуючої публікації за її унікальним ID
-app.put('/posts/:id', async (req, res) => {
-    try {
-        const { id } = req.params;
-        const { title, content } = req.body;
-        const [updatedRows] = await Post.update({ title, content }, { where: { id } });
-        
-        if (updatedRows > 0) {
-            const updatedPost = await Post.findByPk(id);
-            res.json({ message: 'Дані поста оновлено', post: updatedPost });
-        } else {
-            res.status(404).json({ message: 'Пост не знайдено' });
-        }
-    } catch (error) {
-        res.status(400).json({ message: 'Помилка оновлення', error: error.message });
-    }
-});
-
-// DELETE /posts/:id - Вилучення публікації з бази даних
-app.delete('/posts/:id', async (req, res) => {
-    try {
-        const { id } = req.params;
-        const deletedRows = await Post.destroy({ where: { id } });
-        if (deletedRows > 0) {
-            res.json({ message: 'Пост успішно видалено' });
-        } else {
-            res.status(404).json({ message: 'Пост не знайдено' });
-        }
-    } catch (error) {
-        res.status(500).json({ message: 'Помилка видалення', error: error.message });
-    }
-});
-
-// Автоматична синхронізація моделей (alter: true автоматично модифікує схему при змінах)
+// Автоматична синхронізація моделей
 sequelize.sync({ alter: true })
     .then(() => {
-        console.log('✔ Все таблицы успешно синхронизированы с PostgreSQL/SQLite!');
+        console.log('✔ Все таблицы успешно синхронизированы с SQLite!');
         app.listen(3000, () => console.log(`🚀 Сервер запущен на порту 3000`));
     })
     .catch(err => console.error('❌ Критическая ошибка БД:', err));
-
 ```
 
 ---
@@ -245,7 +208,9 @@ sequelize.sync({ alter: true })
 
 ### 3.1 Логи синхронізації та ініціалізації сховища
 
-При запуску сервера за допомогою команди `node server.js` у вбудованому терміналі VS Code, бібліотека Sequelize успішно підключається до локального драйвера, ініціалізує або модифікує структуру реляційних таблиць всередині автоматично створеного файлу `database.sqlite` та виводить повідомлення про успішний старт.
+При запуску сервера за допомогою команди `node server.js` у вбудованому терміналі VS Code, бібліотека Sequelize успішно підключається до локального драйвера, ініціалізує структуру таблиць всередині `database.sqlite` та виводить повідомлення про успішний старт.
+
+![Логи терміналу](./images/lab2-terminal.png)
 
 ### 3.2 Тестування REST API за допомогою Postman
 
@@ -253,7 +218,9 @@ sequelize.sync({ alter: true })
 
 * **`POST /users`** — успішно створює сутність автора.
 * **`POST /posts`** — публікує запис та автоматично пов'язує його з унікальним ідентифікатором `userId`.
-* **`GET /users`** — повертає об'єкт JSON, який містить масив користувачів із вкладеними об'єктами їхніх постів, що підтверджує правильну роботу реляційного механізму `One-to-Many`.
+* **`GET /users`** — повертає масив користувачів із вкладеними об'єктами їхніх постів, що підтверджує правильну роботу реляційного механізму `One-to-Many`.
+
+![Результат у Postman](./images/lab2-postman.png)
 
 ---
 
@@ -261,11 +228,9 @@ sequelize.sync({ alter: true })
 
 * **Репозиторій із серверним кодом та моделями:** [Встав посилання на свій репозиторій]
 * **Логічно обґрунтовані коміти (Conventional Commits):**
-* `feat: встановлено пакети sqlite3 та ініціалізовано конфігурацію сховища через Sequelize`
-* `feat: створено реляційні моделі User та Post з валідацією атрибутів`
-* `feat: задекларовано зв'язок One-to-Many та реалізовано CRUD контролери для REST API`
-
-
+  * `feat: встановлено пакети sqlite3 та ініціалізовано конфігурацію сховища через Sequelize`
+  * `feat: створено реляційні моделі User та Post з валідацією атрибутів`
+  * `feat: задекларовано зв'язок One-to-Many та реалізовано CRUD контролери для REST API`
 
 ---
 
@@ -274,7 +239,3 @@ sequelize.sync({ alter: true })
 Під час виконання лабораторної роботи №2 було успішно розширено архітектуру розробленого раніше серверного застосунку на Node.js для інтеграції з реляційним сховищем даних. На практиці опановано роботу з ORM-бібліотекою Sequelize, що дозволило абстрагуватися від написання низькорівневих SQL-інструкцій та взаємодіяти з реляційними сутностями на рівні декларативних JavaScript-класів.
 
 Було успішно спроектовано та впроваджено моделі `User` та `Post`, реалізовано автоматичну генерацію зовнішніх ключів за допомогою зв'язку типу `One-to-Many`, а також розгорнуто REST API контролери для забезпечення повноцінного життєвого циклу даних (CRUD). Використання SQLite як вбудованого рушія підтвердило гнучкість ORM-підходу, дозволивши розгорнути повноцінну ACID-сумісну реляційну базу даних у вигляді локального файлу без втрати функціональності та потреби у встановленні сторонніх серверів.
-
-```
-
-```
